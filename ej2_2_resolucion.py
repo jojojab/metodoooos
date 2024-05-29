@@ -32,6 +32,8 @@ def images_reconstructed(U, S, Vt, d, cant_images):
             col = i % 5
             axs[row, col].imshow(A_d[i], cmap='gray')
             axs[row, col].axis('off')
+        #     delete the empty axs
+        fig.delaxes(axs[3,4])
         fig.suptitle(f'Images Reconstructed with d = {d_i}')
         plt.show()
         plt.close()
