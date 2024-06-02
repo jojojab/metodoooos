@@ -10,3 +10,22 @@ def calculate_similarity_matrix(X, sigma, chunk_size=100):
             pairwise_sq_dists = np.sum((X_chunk[:, np.newaxis] - Y_chunk[np.newaxis, :]) ** 2, axis=-1)
             similarity_matrix[i:i + chunk_size, j:j + chunk_size] = np.exp(-pairwise_sq_dists / (2 * sigma ** 2))
     return similarity_matrix
+
+
+def pca(X, n_components):
+    X_mean = X.mean(axis=0)
+    X_std = X.std(axis=0)
+    X_standardized = (X - X_mean) / X_std
+
+    covariance_matrix = np.cov(X_standardized, rowvar=False)
+
+    eigenvalues, eigenvectors = np.linalg.eigh(covariance_matrix)
+
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    sorted_eigenvectors = eigenvectors[:, sorted_indices]
+
+    components = sorted_eigenvectors[:, :n_components]
+
+    X_reduced = np.dot(X_standardized, components)
+
+    return X_reduced
