@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def calculate_similarity_matrix(X, sigma, chunk_size=100):
     n = X.shape[0]
     similarity_matrix = np.zeros((n, n))
@@ -13,17 +14,17 @@ def calculate_similarity_matrix(X, sigma, chunk_size=100):
 
 
 def pca(X, n_components):
-    # Centrar los datos
-    X_centered = X - np.mean(X, axis=0)
-    # Calcular la matriz de covarianza
-    covariance_matrix = np.cov(X_centered, rowvar=False)
-    # Calcular los valores y vectores propios
+    X_standardized = (X - X.mean(axis=0)) / X.std(axis=0)
+
+    covariance_matrix = np.cov(X_standardized, rowvar=False)
+
     eigenvalues, eigenvectors = np.linalg.eigh(covariance_matrix)
-    # Ordenar los vectores propios por los valores propios en orden descendente
-    sorted_index = np.argsort(eigenvalues)[::-1]
-    sorted_eigenvectors = eigenvectors[:, sorted_index]
-    # Seleccionar los primeros n_components vectores propios
-    eigenvectors_subset = sorted_eigenvectors[:, :n_components]
-    # Transformar los datos
-    X_reduced = np.dot(X_centered, eigenvectors_subset)
+
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    sorted_eigenvectors = eigenvectors[:, sorted_indices]
+
+    components = sorted_eigenvectors[:, :n_components]
+
+    X_reduced = np.dot(X_standardized, components)
+
     return X_reduced

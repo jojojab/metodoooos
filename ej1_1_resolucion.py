@@ -18,6 +18,7 @@ def main():
         similarity_matrix_reduced = calculate_similarity_matrix(Z, sigma)
         plot_similarity_matrix(similarity_matrix_reduced, f'Similarity Matrix for d={d}')
 
+
 def plot_similarity_matrix(matrix, title):
     plt.figure(figsize=(8, 6))
     plt.imshow(matrix, interpolation='nearest')
