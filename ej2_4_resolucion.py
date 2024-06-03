@@ -82,8 +82,6 @@ def main():
             if error > mayor_error:
                 mayor_error = error
         errors.append(mayor_error)
-        if mayor_error < 0.1:
-            print(f'El número mínimo de dimensiones es {d}')
 
     all_image_vectors2 = images_to_matrix(images_directory[1], cant_images[1])
     u2, s2, vt2, a_d2 = image_reconstructed(all_image_vectors2, dim)
