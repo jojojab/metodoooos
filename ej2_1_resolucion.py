@@ -1,4 +1,3 @@
-import sns
 from PIL import Image
 import numpy as np
 import os
@@ -43,6 +42,7 @@ def plot_matrix_vt(Vt):
     plt.show()
 
 def main():
+    plt.style.use('ggplot')
     cant_images = 19
     images_directory = 'images1'
 

@@ -20,60 +20,41 @@ def images_to_matrix(images_directory, cant_images):
             all_image_vectors.append(image_vector)
     return all_image_vectors
 
-def reconstruct_images(U, S, Vt, d):
+def reconstruct_images(data, d):
+    U, S, Vt = np.linalg.svd(data, full_matrices=False)
     U_d = U[:, :d]
     S_d = np.diag(S[:d])
     Vt_d = Vt[:d, :]
     A_d = U_d @ S_d @ Vt_d
-    return A_d
+    reduced_data = U_d @ S_d
+    return U_d, S_d, Vt_d, reduced_data
 
-def similarity_percentage(similarity_matrix):
-    total_sum = 0
-    total_count = 0
+def compute_similarity(reduced_data):
+    ##CENTRO ACA O ARRIBA?
+    # reduced_data = reduced_data - np.mean(reduced_data, axis=0)
+    dot_product = np.dot(reduced_data, reduced_data.T)
+    norms = np.linalg.norm(reduced_data, axis=1)
+    similarity_matrix = dot_product / np.outer(norms, norms)
+    return similarity_matrix
 
-    for row in similarity_matrix:
-        total_sum += sum(row)
-        total_count += len(row)
-
-    if total_count == 0:
-        return 0  # To handle the case of an empty matrix
-
-    average = total_sum / total_count
-    return average
-
-def plot_similarity_percentage(similarity_percentage_matrix, dim):
-    for idx, matrix in enumerate(similarity_percentage_matrix):
-        plt.figure(figsize=(5, 5))
-        plt.imshow(matrix, cmap='viridis', interpolation='none')
+# Calcular la similaridad entre pares de imágenes para diferentes valores de d
+def analyze_similarity(data, d_values):
+    plt.figure(figsize=(15, 10))
+    for d in d_values:
+        U, S, VT, reduced_data = reconstruct_images(data, d)
+        similarity_matrix = compute_similarity(reduced_data)
+        plt.imshow(similarity_matrix, cmap='hot', interpolation='nearest')
+        plt.title(f'Matriz de similaridad para d = {d}')
         plt.colorbar()
-        plt.title(f'Dimension: {dim[idx]}')
         plt.show()
-
 
 def main():
     cant_images = 19
     images_directory = 'images1'
-    sigma = 1
-    dim = [2, 3, 4, 5, 10, 15, 20, 28]
+    dim = [2, 3, 4, 5, 8, 10, 15, 17, 19]
 
     all_image_vectors = images_to_matrix(images_directory, cant_images)
-    U, S, Vt = np.linalg.svd(all_image_vectors, full_matrices=False)
-    similarity_percentage_matrix = []
-    sim_percentage_matrix = np.zeros((cant_images, cant_images))
-    for i in range(len(dim)):
-        for j in range(cant_images):
-            for k in range(cant_images):
-                A_d = reconstruct_images(U, S, Vt, dim[i])[j].reshape(28, 28)
-                B_d = reconstruct_images(U, S, Vt, dim[i])[k].reshape(28, 28)
-
-                similarity_matrix = calculate_similarity_matrix(A_d, B_d, sigma)
-                # print(similarity_matrix)
-                # print(similarity_matrix.shape)
-                sim_percentage_matrix[j, k] = similarity_percentage(similarity_matrix)
-        similarity_percentage_matrix.append(sim_percentage_matrix.tolist())
-    # print(similarity_percentage_matrix)
-
-    plot_similarity_percentage(similarity_percentage_matrix, dim)
+    analyze_similarity(all_image_vectors, dim)
 
 if __name__ == '__main__':
     main()

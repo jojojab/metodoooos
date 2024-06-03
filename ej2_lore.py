@@ -10,6 +10,5 @@ def calculate_similarity_matrix(X, Y, sigma):
             similarity_matrix[i, j] = np.exp(-pairwise_sq_dists / (2 * sigma ** 2))
     return similarity_matrix
 
-
-def norma_de_frobenius(X):
-    return np.linalg.norm(X, 'fro')
+def norma_de_frobenius(A, A_d):
+    return np.linalg.norm(A - A_d, 'fro') / np.linalg.norm(A, 'fro')

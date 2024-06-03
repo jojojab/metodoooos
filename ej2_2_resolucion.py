@@ -39,9 +39,10 @@ def images_reconstructed(U, S, Vt, d, cant_images):
         plt.close()
 
 def main():
+    plt.style.use('ggplot')
     cant_images = 19
     images_directory = 'images1'
-    dim = [2, 5, 10, 20, 25, 28, 29]
+    dim = [2, 3, 4, 5, 8, 10, 15, 17, 19]
 
     all_image_vectors = images_to_matrix(images_directory, cant_images)
     U, S, Vt = np.linalg.svd(all_image_vectors, full_matrices=False)
