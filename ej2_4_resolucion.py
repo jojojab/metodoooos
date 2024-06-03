@@ -2,10 +2,9 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-
 from matplotlib.ticker import PercentFormatter
+from ej2_lore import norma_de_frobenius, image_to_vector, image_reconstructed
 
-from ej2_lore import norma_de_frobenius
 
 def image_to_matrix(image_path, d):
     image_filename = f'img{d:02d}.jpeg'
@@ -17,10 +16,6 @@ def image_to_matrix(image_path, d):
     else:
         raise FileNotFoundError(f"No se encontró el archivo {image_full_path}")
 
-def image_to_vector(image_path):
-    image = Image.open(image_path).convert('L')
-    image_matrix = np.array(image)
-    return image_matrix.flatten()
 
 def images_to_matrix(images_directory, cant_images):
     all_image_vectors = []
@@ -34,18 +29,11 @@ def images_to_matrix(images_directory, cant_images):
             raise FileNotFoundError(f"No se encontró el archivo {image_path}")
     return np.array(all_image_vectors)
 
-def reconstruct_images(data, d):
-    U, S, Vt = np.linalg.svd(data, full_matrices=False)
-    U_d = U[:, :d]
-    S_d = np.diag(S[:d])
-    Vt_d = Vt[:d, :]
-    A_d = U_d @ S_d @ Vt_d
-    return U_d, S_d, Vt_d, A_d
 
 def plot_commited_errors(errores):
     plt.figure(figsize=(10, 8))
-    plt.plot(range(1, len(errores) + 1), [error * 100 for error in errores], color = 'blue')
-    plt.scatter(range(1, len(errores) + 1), [error * 100 for error in errores], color = 'blue')
+    plt.plot(range(1, len(errores) + 1), [error * 100 for error in errores], color='blue')
+    plt.scatter(range(1, len(errores) + 1), [error * 100 for error in errores], color='blue')
     plt.axhline(y=10, color='r', linestyle='--')
     plt.xlabel('Número de dimensiones')
     plt.ylabel('Error')
@@ -69,45 +57,44 @@ def plot_commited_errors_for_images(errores):
     plt.xticks(range(len(errores)))
     plt.show()
 
-def change_base(A, Vt):
-    return A @ Vt.T @ Vt
+
+def change_base(a, vt):
+    return a @ vt.T @ vt
+
 
 def main():
     plt.style.use('ggplot')
-    cant_images = 8
-    images_directory = 'datasets_imgs_02'
-    all_image_vectors = images_to_matrix(images_directory, cant_images)
-    errores = []
+    cant_images = [8, 19]
+    images_directory = ['datasets_imgs_02', 'images1']
+    all_image_vectors = images_to_matrix(images_directory[0], cant_images[0])
+    errors = []
+    errors2 = []
     dim = 0
 
     for d in range(1, 11):
         mayor_error = -1
         dim = d
-        for i in range(cant_images):
-            U, S, VT, A_d = reconstruct_images(all_image_vectors, d)
-            reshaped_reconstructed_image = np.reshape(A_d[i], (28, 28))
-            original_image = image_to_matrix(images_directory, i)
+        for i in range(cant_images[0]):
+            u, s, vt, a_d = image_reconstructed(all_image_vectors, d)
+            reshaped_reconstructed_image = np.reshape(a_d[i], (28, 28))
+            original_image = image_to_matrix(images_directory[0], i)
             error = norma_de_frobenius(original_image, reshaped_reconstructed_image)
             if error > mayor_error:
                 mayor_error = error
-        errores.append(mayor_error)
+        errors.append(mayor_error)
         if mayor_error < 0.1:
             print(f'El número mínimo de dimensiones es {d}')
 
-    plot_commited_errors(errores)
+    all_image_vectors2 = images_to_matrix(images_directory[1], cant_images[1])
+    u2, s2, vt2, a_d2 = image_reconstructed(all_image_vectors2, dim)
+    for i in range(cant_images[1]):
+        reshaped_reconstructed_image = change_base(a_d2[i], vt).reshape(28, 28)
+        original_image = image_to_matrix(images_directory[1], i)
+        errors2.append(norma_de_frobenius(original_image, reshaped_reconstructed_image))
 
-    images_directory2 = 'images1'
-    cant_images2 = 19
-    errores2 = []
+    plot_commited_errors(errors)
+    plot_commited_errors_for_images(errors2)
 
-    all_image_vectors2 = images_to_matrix(images_directory2, cant_images2)
-    U2, S2, VT2, A_d2 = reconstruct_images(all_image_vectors2, dim)
-    for i in range(cant_images2):
-        reshaped_reconstructed_image = change_base(A_d2[i], VT).reshape(28, 28)
-        original_image = image_to_matrix(images_directory2, i)
-        errores2.append(norma_de_frobenius(original_image, reshaped_reconstructed_image))
-
-    plot_commited_errors_for_images(errores2)
 
 if __name__ == '__main__':
     main()
