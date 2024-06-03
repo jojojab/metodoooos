@@ -1,46 +1,33 @@
-import sns
-from PIL import Image
 import numpy as np
-import os
 import matplotlib.pyplot as plt
+from ej2_lore import images_to_matrix
 
-def image_to_vector(image_path):
-    image = Image.open(image_path)
-    image_matrix = np.array(image)
-    return image_matrix.flatten().tolist()
 
-def images_to_matrix(images_directory, cant_images):
-    all_image_vectors = []
-    for i in range(cant_images):  # Adjust range according to your image naming convention
-        image_filename = f'img{i:02d}.jpeg'  # Format the filename
-        image_path = os.path.join(images_directory, image_filename)
-        if os.path.exists(image_path):
-            image_vector = image_to_vector(image_path)
-            all_image_vectors.append(image_vector)
-    return all_image_vectors
-
-def plot_matrix_u(U):
+def plot_matrix_u(u):
     plt.figure(figsize=(10, 8))
-    plt.imshow(U)
+    plt.imshow(u)
     plt.title('Matrix U')
     plt.colorbar()
     plt.show()
 
-def singular_values_bar_plot(S):
+
+def singular_values_bar_plot(s):
     plt.figure(figsize=(10, 8))
-    plt.bar(np.arange(len(S)), S)
+    plt.bar(np.arange(len(s)), s)
     plt.xlabel('Singular Value Index')
     plt.ylabel('Singular Value')
     plt.title('Singular Values Bar Plot')
     plt.grid()
     plt.show()
 
-def plot_matrix_vt(Vt):
+
+def plot_matrix_vt(vt):
     plt.figure(figsize=(10, 8))
-    plt.imshow(Vt)
+    plt.imshow(vt)
     plt.title('Matrix Vt')
     plt.colorbar()
     plt.show()
+
 
 def main():
     cant_images = 19
@@ -48,12 +35,11 @@ def main():
 
     all_image_vectors = images_to_matrix(images_directory, cant_images)
 
-    U, S, Vt = np.linalg.svd(all_image_vectors, full_matrices=False)
+    u, s, vt = np.linalg.svd(all_image_vectors, full_matrices=False)
 
-    plot_matrix_u(U)
-    singular_values_bar_plot(S)
-    plot_matrix_vt(Vt)
-
+    plot_matrix_u(u)
+    singular_values_bar_plot(s)
+    plot_matrix_vt(vt)
 
 
 if __name__ == '__main__':
