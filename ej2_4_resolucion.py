@@ -70,8 +70,7 @@ def plot_reconstruction(a):
 
 def main():
     plt.style.use('ggplot')
-    # cant_images = [8, 19]
-    cant_images = [8, 10]
+    cant_images = [8, 19]
     images_directory = ['datasets_imgs_02', 'images1']
     all_image_vectors = images_to_matrix(images_directory[0], cant_images[0])
     all_image_vectors2 = images_to_matrix(images_directory[1], cant_images[1])
