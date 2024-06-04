@@ -13,6 +13,10 @@ def calculate_similarity_matrix(X, sigma, chunk_size=100):
     return similarity_matrix
 
 
+def standarize(X):
+    return (X - X.mean(axis=0)) / X.std(axis=0)
+
+
 def pca(X, n_components):
     X_standardized = (X - X.mean(axis=0)) / X.std(axis=0)
 

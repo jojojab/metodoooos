@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 
 def main():
+    plt.style.use('ggplot')
+
     dataset = pd.read_csv('dataset.csv')
 
     X = dataset.drop(columns=['Unnamed: 0'])

@@ -5,9 +5,18 @@ from ej1_lore import pca
 
 
 def main():
+    plt.style.use('ggplot')
+
     dataset = pd.read_csv('dataset.csv')
 
     X = dataset.drop(columns=['Unnamed: 0'])
+
+    plt.figure(figsize=(8, 12))
+    plt.imshow(X, interpolation='nearest', aspect='auto')
+    plt.title("X")
+    plt.colorbar(label='Similarity Value')
+    plt.tight_layout()
+    plt.show()
 
     # PCA
     d_values = [2, 6, 10]
