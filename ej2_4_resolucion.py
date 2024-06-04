@@ -61,34 +61,35 @@ def plot_commited_errors_for_images(errores):
 def change_base(a, vt):
     return a @ vt.T @ vt
 
+def plot_reconstruction(a):
+    plt.imshow(a, cmap='gray')
+    plt.axis('off')
+    plt.show()
+
+
 
 def main():
     plt.style.use('ggplot')
-    cant_images = [8, 19]
+    # cant_images = [8, 19]
+    cant_images = [8, 10]
     images_directory = ['datasets_imgs_02', 'images1']
     all_image_vectors = images_to_matrix(images_directory[0], cant_images[0])
+    all_image_vectors2 = images_to_matrix(images_directory[1], cant_images[1])
     errors = []
     errors2 = []
     dim = 0
 
     for d in range(1, 11):
-        mayor_error = -1
         dim = d
-        for i in range(cant_images[0]):
-            u, s, vt, a_d = image_reconstructed(all_image_vectors, d)
-            reshaped_reconstructed_image = np.reshape(a_d[i], (28, 28))
-            original_image = image_to_matrix(images_directory[0], i)
-            error = norma_de_frobenius(original_image, reshaped_reconstructed_image)
-            if error > mayor_error:
-                mayor_error = error
-        errors.append(mayor_error)
+        u, s, vt, a_d = image_reconstructed(all_image_vectors, d)
+        errors.append(norma_de_frobenius(all_image_vectors, a_d))
 
-    all_image_vectors2 = images_to_matrix(images_directory[1], cant_images[1])
     u2, s2, vt2, a_d2 = image_reconstructed(all_image_vectors2, dim)
     for i in range(cant_images[1]):
         reshaped_reconstructed_image = change_base(a_d2[i], vt).reshape(28, 28)
         original_image = image_to_matrix(images_directory[1], i)
         errors2.append(norma_de_frobenius(original_image, reshaped_reconstructed_image))
+        plot_reconstruction(reshaped_reconstructed_image)
 
     plot_commited_errors(errors)
     plot_commited_errors_for_images(errors2)
