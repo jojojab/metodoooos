@@ -79,9 +79,10 @@ def main():
     dim = 0
 
     for d in range(1, 11):
-        dim = d
         u, s, vt, a_d = image_reconstructed(all_image_vectors, d)
         errors.append(norma_de_frobenius(all_image_vectors, a_d))
+        if (errors[-1] < 0.1) & (dim == 0):
+            dim = d
 
     u2, s2, vt2, a_d2 = image_reconstructed(all_image_vectors2, dim)
     for i in range(cant_images[1]):
