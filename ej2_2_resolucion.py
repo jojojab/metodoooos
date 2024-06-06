@@ -11,7 +11,7 @@ def plot_reconstruction(a_d, cant_images, d):
         axs[row, col].axis('off')
     #     delete the empty axs
     fig.delaxes(axs[3, 4])
-    fig.suptitle('Images Reconstructed for d = ' + str(d))
+    fig.suptitle('Imagenes Reconstruidas con d = ' + str(d))
     plt.show()
     plt.close()
 
@@ -37,7 +37,7 @@ def main():
     dim = [15, 10, 5, 3, 2]
 
     all_image_vectors = images_to_matrix(images_directory, cant_images)
-    plot_reconstruction_all_dim(all_image_vectors, cant_images1, dim)
+    # plot_reconstruction_all_dim(all_image_vectors, cant_images1, dim)
     u_d, s_d, vt_d, a_d = image_reconstructed(all_image_vectors, 2)
     plot_reconstruction(a_d, cant_images, 2)
     u_d, s_d, vt_d, a_d = image_reconstructed(all_image_vectors, 19)
