@@ -61,38 +61,81 @@ def plot_commited_errors_for_images(errores):
 def change_base(a, vt):
     return a @ vt.T @ vt
 
-def plot_reconstruction(a):
-    plt.imshow(a, cmap='gray')
-    plt.axis('off')
+def plot_reconstruction(cant_images, images_directory, a_d, vt2, errors2):
+    fig, axs = plt.subplots(4, 5)
+    for i in range(cant_images):
+        reshaped_reconstructed_image = change_base(a_d[i], vt2).reshape(28, 28)
+        original_image = image_to_matrix(images_directory, i)
+        errors2.append(norma_de_frobenius(original_image, reshaped_reconstructed_image))
+        row = i // 5
+        col = i % 5
+        axs[row, col].imshow(reshaped_reconstructed_image, cmap='gray')
+        axs[row, col].axis('off')
+        axs[row, col].set_title(f'Imagen {i+1}')
+    #     make the titles smaller
+    for ax in axs.flat:
+        ax.title.set_fontsize(8)
+    # delete empty axes
+    fig.delaxes(axs[3, 4])
+    fig.suptitle('Imagenes Reconstruidas')
     plt.show()
+    plt.close()
+
+
+def plot_images_dataset2(data):
+    fig, axs = plt.subplots(2, 4)
+    for i in range(8):
+        row = i // 4
+        col = i % 4
+        axs[row, col].imshow(data[i].reshape(28, 28), cmap='gray')
+        axs[row, col].axis('off')
+        axs[row, col].set_title(f'Imagen {i+1}')
+    fig.suptitle('Imagenes dataset 2')
+    plt.show()
+    plt.close()
+
+def plot_autovectores(vt):
+    fig, axs = plt.subplots(2, 4)
+    for i in range(8):
+        row = i // 4
+        col = i % 4
+        axs[row, col].imshow(vt[i].reshape(28, 28), cmap='gray')
+        axs[row, col].axis('off')
+        axs[row, col].set_title(f'Autovector {i+1}')
+        axs[row, col].title.set_fontsize(8)
+        plt.subplots_adjust(wspace=0.5, hspace=0.5)
+    fig.suptitle('Autovectores')
+    plt.show()
+    plt.close()
 
 
 
 def main():
     plt.style.use('ggplot')
-    cant_images = [8, 19]
-    images_directory = ['datasets_imgs_02', 'images1']
+    cant_images = [19, 8]
+    images_directory = ['images1', 'datasets_imgs_02']
     all_image_vectors = images_to_matrix(images_directory[0], cant_images[0])
     all_image_vectors2 = images_to_matrix(images_directory[1], cant_images[1])
     errors = []
     errors2 = []
     dim = 0
 
+    plot_images_dataset2(all_image_vectors2)
+
     for d in range(1, 11):
-        u, s, vt, a_d = image_reconstructed(all_image_vectors, d)
-        errors.append(norma_de_frobenius(all_image_vectors, a_d))
+        u2, s2, vt2, a_d2 = image_reconstructed(all_image_vectors2, d)
+        errors.append(norma_de_frobenius(all_image_vectors2, a_d2))
         if (errors[-1] < 0.1) & (dim == 0):
             dim = d
 
-    u2, s2, vt2, a_d2 = image_reconstructed(all_image_vectors2, dim)
-    for i in range(cant_images[1]):
-        reshaped_reconstructed_image = change_base(a_d2[i], vt).reshape(28, 28)
-        original_image = image_to_matrix(images_directory[1], i)
-        errors2.append(norma_de_frobenius(original_image, reshaped_reconstructed_image))
-        plot_reconstruction(reshaped_reconstructed_image)
+    plot_autovectores(vt2)
+
+    u, s, vt, a_d = image_reconstructed(all_image_vectors, dim)
+    plot_reconstruction(cant_images[0], images_directory[0], a_d, vt2, errors2)
 
     plot_commited_errors(errors)
     plot_commited_errors_for_images(errors2)
+
 
 
 if __name__ == '__main__':
