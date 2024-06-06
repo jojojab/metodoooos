@@ -5,7 +5,6 @@ from ej1_lore import pca
 
 
 def main():
-    plt.style.use('ggplot')
 
     dataset = pd.read_csv('dataset.csv')
 
@@ -20,7 +19,7 @@ def main():
 
     # PCA
     d_values = [2, 6, 10]
-    sigma = 1.0
+    sigma = 1
 
     for d in d_values:
         Z = pca(X, d)
