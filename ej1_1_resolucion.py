@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from ej1_lore import calculate_similarity_matrix, pca
-from sklearn.cluster import KMeans
-
 
 def main():
     dataset = pd.read_csv('dataset.csv')
@@ -16,8 +14,7 @@ def main():
     plt.tight_layout()
     plt.show()
 
-    # PCA
-    d_values = [2, 6, 10]
+    d_values = [2, 6, 10, 106]
     sigma = 1
 
     Clusters = None

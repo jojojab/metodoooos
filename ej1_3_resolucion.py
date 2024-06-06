@@ -11,6 +11,11 @@ def main():
 
     X = standarize(dataset.drop(columns=['Unnamed: 0']))
 
+    print_best_d(X, Y, calc_precision)
+    print_best_d(X, Y, calc_precision_penalty)
+
+def print_best_d(X, Y, presition_func):
+
     U, S, Vt = np.linalg.svd(X, full_matrices=False)
 
     max_d = len(U[0])
@@ -21,13 +26,15 @@ def main():
     epsilon = np.max(S) * 1e-10 * 2
     Sd_inv_list = [np.diag(1 / (S[:d] + epsilon * (S[:d] < epsilon))) for d in range(1, max_d + 1)]
 
+
     min_frobenius_norm = float('inf')
     best_d = 0
     errors = []
 
     for i in range(max_d):
-        frobenius_norm = calc_precision(
+        frobenius_norm = presition_func(
             X, Y, Ud_list[i], Vtd_list[i], Sd_inv_list[i])
+
 
         errors.append(frobenius_norm)
 
@@ -56,6 +63,21 @@ def calc_precision(X_standardized, Y, Ud, Vtd, Sd_inv):
     frobenius_norm = np.linalg.norm(residuals)
 
     return frobenius_norm
+
+
+def calc_precision_penalty(X_standardized, Y, Ud, Vtd, Sd_inv, lambda_penalty=2):
+    A_daga = Vtd.T @ Sd_inv @ Ud.T
+    X_moño = A_daga @ Y
+
+    residuals = X_standardized @ X_moño - Y
+
+    frobenius_norm = np.linalg.norm(residuals)
+
+    # Penalización por la dimensión
+    d = Ud.shape[1]
+    penalization = lambda_penalty * d
+
+    return frobenius_norm + penalization
 
 
 if __name__ == '__main__':
