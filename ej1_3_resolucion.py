@@ -17,7 +17,6 @@ def main():
 def print_best_d(X, Y, presition_func):
 
     U, S, Vt = np.linalg.svd(X, full_matrices=False)
-
     max_d = len(U[0])
 
     Ud_list = [U[:, :d] for d in range(1, max_d + 1)]
@@ -34,7 +33,6 @@ def print_best_d(X, Y, presition_func):
     for i in range(max_d):
         frobenius_norm = presition_func(
             X, Y, Ud_list[i], Vtd_list[i], Sd_inv_list[i])
-
 
         errors.append(frobenius_norm)
 
@@ -73,7 +71,6 @@ def calc_precision_penalty(X_standardized, Y, Ud, Vtd, Sd_inv, lambda_penalty=2)
 
     frobenius_norm = np.linalg.norm(residuals)
 
-    # Penalización por la dimensión
     d = Ud.shape[1]
     penalization = lambda_penalty * d
 
