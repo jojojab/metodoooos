@@ -72,10 +72,8 @@ def plot_reconstruction(cant_images, images_directory, a_d, vt2, errors2):
         axs[row, col].imshow(reshaped_reconstructed_image, cmap='gray')
         axs[row, col].axis('off')
         axs[row, col].set_title(f'Imagen {i+1}')
-    #     make the titles smaller
     for ax in axs.flat:
         ax.title.set_fontsize(8)
-    # delete empty axes
     fig.delaxes(axs[3, 4])
     fig.suptitle('Imagenes Reconstruidas')
     plt.show()

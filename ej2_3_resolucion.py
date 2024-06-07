@@ -15,7 +15,6 @@ def compute_similarity(reconstructed_data):
     return similarity_matrix
 
 
-# Calcular la similaridad entre pares de imágenes para diferentes valores de d
 def analyze_similarity(data, d_values):
     plt.figure(figsize=(15, 10))
     for d in d_values:
